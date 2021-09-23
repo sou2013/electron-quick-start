@@ -1,8 +1,35 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 const path = require('path')
+//const { app } = require('electron')
 
 function createWindow () {
+  let s = './clientTestuser.p12';
+  let options = {certificate:s, password:'changeit'}
+  let ops = app.importCertificate.options
+ // ops.certificate = s
+  //ops.password = 'changeit'
+  app.importCertificate(options, (result) => {
+    if (result === 0) {
+        console.log('ok')
+    }else {
+      console.log('err')
+    }
+  }); 
+    
+  s = './clientBob.p12'
+  options = {certificate:s, password:'changeit'}
+  
+ // ops.certificate = s
+  //ops.password = 'changeit'
+  app.importCertificate(options, (result) => {
+    if (result === 0) {
+        console.log('ok')
+    }else {
+      console.log('err')
+    }
+  }); 
+    
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -11,10 +38,20 @@ function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   })
+let url = 'https://localhost:8443/user';
+/*
+  BrowserWindow.webContents.on('select-client-certificate', (event, webContents, url, list, callback) => {
+    event.preventDefault()
+    callback(list[0])
+  })
 
+*/
+mainWindow.title = "Electron PKI-Auth Demo for P093"
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
-
+ //  mainWindow.loadFile('index.html')
+ mainWindow.loadURL('https://localhost:8443/user')
+ 
+//mainWindow.importCertificate()
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 }
